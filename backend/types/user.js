@@ -15,7 +15,7 @@ class User {
     }
 
     // Signup
-    async signup(password) {
+    async signup(email, password) {
         const users = await getUserCollection().catch(() => {
             throw Error("Failed to fetch collection!")
         });
@@ -34,6 +34,7 @@ class User {
         await users.insertOne({
             "_id": this.username,
             "passwordHash": passwordHash,
+            "email": email,
             "oneTimeCodes": [],
             "deviceTokens": [],
             "bearerTokens": [],

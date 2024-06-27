@@ -1,9 +1,9 @@
 const { Hono } = require('hono');
 
-const users = new Hono();
+const routes = new Hono();
 
-users.get('/', (c) => {
+routes.get('/', (c) => {
   return c.text("OK");
 });
 
-module.exports = users;
+module.exports = routes;

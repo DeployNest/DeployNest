@@ -36,10 +36,10 @@ const apiFolder = path.join(__dirname, "api");
 importRoutes(apiFolder, "/api");
 
 if (environment.get("ENVIRONMENT") == "development") {
-    app.get('/', (c) => c.text('Hello from DeployNest dev environment!'));
+  app.get('/', (c) => c.text('Hello from DeployNest dev environment!'));
 }
 
 serve({
-    fetch: app.fetch,
-    port: 3000,
+  fetch: app.fetch,
+  port: 3000,
 });
