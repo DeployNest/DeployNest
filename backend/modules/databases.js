@@ -7,14 +7,28 @@ const uri = environment.get("MONGO_URL")
 // Create a new MongoClient
 const client = new MongoClient(uri);
 
-const database = {};
+const databases = {};
 
-database.getMongo = async function() {
+databases.getMongo = async function() {
   if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
-    console.log('Connected successfully to server');
+    console.log('Connected successfully to database');
   }
   return client.db('DeployNest');
 }
 
-module.exports = database;
+databases.getUserCollection = async function() {
+  const mongoDB = await databases.getMongo();
+  return mongoDB.collection("users")
+}
+
+async function createIndexes() {
+  databases.getUserCollection().then((collection) => {
+    return collection.createIndex("email", {
+      unique: true,
+    })
+  })
+}
+createIndexes()
+
+module.exports = databases;
