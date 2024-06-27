@@ -1,0 +1,23 @@
+{
+  "name": "deploynest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@hono/node-server": "^1.11.4",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "envalid": "^8.0.0",
+    "hono": "^4.4.8",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.7.0",
+    "nodemon": "^3.1.4"
+  },
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "iamEvanYT",
+  "license": "ISC"
+}
