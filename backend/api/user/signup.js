@@ -16,7 +16,11 @@ routes.post(
     validator("json", (value, c) => {
         const parsed = schema.safeParse(value)
         if (!parsed.success) {
-            return c.text('Invalid Body', 400)
+            if (parsed.error?.issues && parsed.error.issues[0] && parsed.error.issues[0].message) {
+                return c.text(parsed.error.issues[0].message, 400)
+            } else {
+                return c.text('Invalid Body', 400)
+            }
         }
     }),
     async (c) => {
@@ -31,6 +35,7 @@ routes.post(
         }).catch((err) => {
             return c.text(err.message, 500);
         })
-    });
+    }
+);
 
 module.exports = routes
