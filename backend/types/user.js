@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const environment = require("../modules/environment");
 const databases = require("../modules/databases");
+const permissions = require("../modules/permissions");
 const { MongoServerError } = require("mongodb")
 
 class User {
@@ -249,6 +250,22 @@ class User {
         const baseUrl = environment.get("BASE_URL");
         const oneTimeCode = await this.generateOneTimeCode();
         return `${baseUrl}/login?code=${oneTimeCode}`;
+    }
+
+    // Permissions
+    async getUserType() {
+        // get document.rank
+        // if document.rank does not exist, put it at lowest ranked role's rank
+        // iterate through `permissions.panelUserTypes` and get the highest ranked role but lower or equal to user's rank and return it
+    }
+
+    async setUserType(userType) {
+
+    }
+
+    async getPermissionLevel(id) {
+        // get document.permissions[id]
+        // TODO: FINISH THIS.
     }
 }
 

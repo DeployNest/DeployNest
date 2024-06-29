@@ -1,10 +1,11 @@
 const { MongoClient } = require("mongodb");
+const { createClient: createRedisClient } = require("redis");
+
 const environment = require("./environment")
 
-// Connection URI
+// MongoDB //
 const uri = environment.get("MONGO_URL")
 
-// Create a new MongoClient
 const client = new MongoClient(uri);
 
 const databases = {};
@@ -22,13 +23,29 @@ databases.getUserCollection = async function() {
   return mongoDB.collection("users")
 }
 
-async function createIndexes() {
+async function createMongoIndexes() {
   databases.getUserCollection().then((collection) => {
     return collection.createIndex("email", {
       unique: true,
     })
   })
 }
-createIndexes()
+createMongoIndexes()
+
+// Redis //
+const redisConfig = {
+  host: environment.get("REDIS_HOST"),
+  port: environment.get("REDIS_PORT"),
+  password: environment.get("REDIS_PASSWORD"),
+};
+
+const redisClient = createRedisClient(redisConfig);
+databases.getRedis = async function() {
+  if (!redisClient.isOpen) {
+    await redisClient.connect();
+    console.log('Connected successfully to Redis');
+  }
+  return redisClient;
+};
 
 module.exports = databases;

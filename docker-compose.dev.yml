@@ -8,6 +8,9 @@ services:
     environment:
       - ENVIRONMENT=development
       - MONGO_URL=mongodb://${DB_USERNAME:-deploynest}:${DB_PASSWORD:-password}@mongo:27017/
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-deploynest}
     command: "npm run dev"
 
   mongo:
@@ -29,3 +32,10 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_PASSWORD:-password}
       ME_CONFIG_MONGODB_URL: mongodb://${DB_USERNAME:-deploynest}:${DB_PASSWORD:-password}@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - 4003:6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD:-deploynest}
