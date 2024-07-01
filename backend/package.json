@@ -17,6 +17,7 @@
     "envalid": "^8.0.0",
     "hono": "^4.4.8",
     "mongodb": "^6.7.0",
+    "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4",
     "prisma": "^5.16.1",
     "redis": "^4.6.14",
@@ -28,8 +29,12 @@
     "build": "tsc",
     "dev": "nodemon .",
     "prisma:migrate": "prisma generate & prisma db push",
+    "prisma:format": "prisma format",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "iamEvanYT",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.15"
+  }
 }
