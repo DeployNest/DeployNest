@@ -48,4 +48,4 @@ databases.getRedis = async function() {
   return redisClient;
 };
 
-module.exports = databases;
+export { databases };

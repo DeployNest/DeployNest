@@ -6,4 +6,4 @@ routes.get('/', (c) => {
   return c.text("OK");
 });
 
-module.exports = routes;
+export { routes };

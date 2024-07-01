@@ -3,7 +3,7 @@ require("dotenv").config();
 const { cleanEnv, str, bool } = require('envalid');
 const crypto = require('crypto');
 
-function generateJwtSecret(length = 64) {
+function generateJwtSecret(length = 64): string {
     return crypto.randomBytes(length).toString('hex');
 }
 
@@ -17,10 +17,10 @@ const variables = cleanEnv(process.env, {
     REDIS_PASSWORD: str({ default: "deploynest" }),
 })
 
-const environment = {}
-
-environment.get = function (envName) {
-    return variables[envName]
+const environment = {
+    get: function (envName) {
+        return variables[envName]
+    }
 }
 
-module.exports = environment
+export { environment };

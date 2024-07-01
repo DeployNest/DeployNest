@@ -12,4 +12,4 @@ configurations.set = function (envName, newValue) {
     
 }
 
-module.exports = configurations
+export { configurations };

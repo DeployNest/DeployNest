@@ -1,28 +1,48 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const environment = require("../modules/environment");
-const databases = require("../modules/databases");
-const permissions = require("../modules/permissions");
-const { MongoServerError } = require("mongodb")
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import { MongoServerError } from "mongodb";
+
+// You'll need to update these import statements based on your project structure
+import { environment } from "../modules/environment";
+import { databases } from "../modules/databases";
+import { permissions } from "../modules/permissions";
+
+interface UserData {
+    _id: string;
+    passwordHash: string;
+    email: string;
+    oneTimeCodes: Array<{ code: string; expiresAt: Date }>;
+    deviceTokens: Array<{ id: string; expiresAt: Date }>;
+    bearerTokens: Array<{ id: string; expiresAt: Date }>;
+    forceChangePassword: boolean;
+}
+
+interface AuthOptions {
+    type: "password" | "oneTimeCode";
+    password?: string;
+    oneTimeCode?: string;
+}
 
 class User {
-    constructor(username) {
+    private username: string;
+
+    constructor(username: string) {
         this.username = username;
     }
 
     // Signup
-    async signup(email, password) {
+    async signup(email: string, password: string): Promise<boolean> {
         const users = await databases.getUserCollection().catch(() => {
-            throw Error("Failed to fetch collection!")
+            throw new Error("Failed to fetch collection!");
         });
 
         const userData = await users.findOne({ "_id": this.username }).catch(() => {
-            throw Error("Failed to fetch user!")
+            throw new Error("Failed to fetch user!");
         });
 
         if (userData) {
-            throw Error("User already exists!")
+            throw new Error("User already exists!");
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -30,34 +50,34 @@ class User {
 
         await users.insertOne({
             "_id": this.username,
-            "passwordHash": passwordHash,
-            "email": email,
-            "oneTimeCodes": [],
-            "deviceTokens": [],
-            "bearerTokens": [],
-            "forceChangePassword": false
+            passwordHash,
+            email,
+            oneTimeCodes: [],
+            deviceTokens: [],
+            bearerTokens: [],
+            forceChangePassword: false
         }).catch((err) => {
             if (err instanceof MongoServerError && err.code === 11000 && err.keyPattern?.email) {
-                throw Error("This email is being used!")
+                throw new Error("This email is being used!");
             }
-            throw Error("Failed to create user!")
-        })
+            throw new Error("Failed to create user!");
+        });
 
-        return true
+        return true;
     }
 
     // Change Password
-    async changePassword(oldPassword, newPassword) {
+    async changePassword(oldPassword: string, newPassword: string): Promise<boolean> {
         const users = await databases.getUserCollection();
-        const userData = await users.findOne({ "_id": this.username });
+        const userData = await users.findOne({ "_id": this.username }) as UserData | null;
 
         if (!userData) {
-            throw Error("User not found!");
+            throw new Error("User not found!");
         }
 
         const isValid = await bcrypt.compare(oldPassword, userData.passwordHash);
         if (!isValid) {
-            throw Error("Invalid old password!");
+            throw new Error("Invalid old password!");
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -72,39 +92,39 @@ class User {
     }
 
     // Authenticate
-    async authWithPassword(password) {
-        if (!(password && typeof password == "string")) {
-            throw Error("Password must be a string!")
+    private async authWithPassword(password: string): Promise<boolean> {
+        if (!(password && typeof password === "string")) {
+            throw new Error("Password must be a string!");
         }
 
         const userData = await databases.getUserCollection().then((users) => {
-            return users.findOne({ "_id": this.username });
+            return users.findOne({ "_id": this.username }) as Promise<UserData | null>;
         }).catch(() => {
-            throw Error("Failed to fetch user!")
+            throw new Error("Failed to fetch user!");
         });
 
         if (!userData) {
-            throw Error("Wrong username or password!")
+            throw new Error("Wrong username or password!");
         }
 
         const success = await bcrypt.compare(password, userData.passwordHash);
        
         if (success) {
-            return true
+            return true;
         }
-        throw Error("Wrong username or password!");
+        throw new Error("Wrong username or password!");
     }
 
-    async authWithOneTimeCode(oneTimeCode) {
-        if (!(oneTimeCode && typeof oneTimeCode == "string")) {
-            throw Error("One Time Code must be a string!")
+    private async authWithOneTimeCode(oneTimeCode: string): Promise<boolean> {
+        if (!(oneTimeCode && typeof oneTimeCode === "string")) {
+            throw new Error("One Time Code must be a string!");
         }
 
         const users = await databases.getUserCollection();
-        const userData = await users.findOne({ "_id": this.username });
+        const userData = await users.findOne({ "_id": this.username }) as UserData | null;
 
         if (!userData) {
-            throw Error("Wrong username or OTP!");
+            throw new Error("Wrong username or OTP!");
         }
 
         const validCode = userData.oneTimeCodes.find(code => 
@@ -119,13 +139,13 @@ class User {
             return true;
         }
 
-        throw Error("Wrong username or OTP!");
+        throw new Error("Wrong username or OTP!");
     }
 
-    async authenticate(options) {
-        if (options.type === "password") {
+    async authenticate(options: AuthOptions): Promise<boolean> {
+        if (options.type === "password" && options.password) {
             return this.authWithPassword(options.password);
-        } else if (options.type === "oneTimeCode") {
+        } else if (options.type === "oneTimeCode" && options.oneTimeCode) {
             return this.authWithOneTimeCode(options.oneTimeCode);
         } else {
             return false;
@@ -133,7 +153,7 @@ class User {
     }
 
     // Access Tokens
-    async generateDeviceToken() {
+    async generateDeviceToken(): Promise<string> {
         const secret = environment.get("JWT_SECRET");
         const tokenId = crypto.randomBytes(16).toString('hex');
         const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
@@ -148,7 +168,7 @@ class User {
         return token;
     }
 
-    async generateBearerToken() {
+    async generateBearerToken(): Promise<string> {
         const secret = environment.get("JWT_SECRET");
         const tokenId = crypto.randomBytes(16).toString('hex');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
@@ -164,7 +184,7 @@ class User {
     }
 
     // Invalidate Tokens
-    async invalidateDeviceToken(tokenId) {
+    async invalidateDeviceToken(tokenId: string): Promise<void> {
         const users = await databases.getUserCollection();
         await users.updateOne(
             { "_id": this.username },
@@ -172,7 +192,7 @@ class User {
         );
     }
 
-    async invalidateDeviceTokens() {
+    async invalidateDeviceTokens(): Promise<void> {
         const users = await databases.getUserCollection();
         await users.updateOne(
             { "_id": this.username },
@@ -180,7 +200,7 @@ class User {
         );
     }
 
-    async invalidateBearerToken(tokenId) {
+    async invalidateBearerToken(tokenId: string): Promise<void> {
         const users = await databases.getUserCollection();
         await users.updateOne(
             { "_id": this.username },
@@ -188,7 +208,7 @@ class User {
         );
     }
 
-    async invalidateBearerTokens() {
+    async invalidateBearerTokens(): Promise<void> {
         const users = await databases.getUserCollection();
         await users.updateOne(
             { "_id": this.username },
@@ -196,7 +216,7 @@ class User {
         );
     }
 
-    async cleanupExpiredTokens() {
+    async cleanupExpiredTokens(): Promise<void> {
         const users = await databases.getUserCollection();
         const now = new Date();
         await users.updateOne(
@@ -211,7 +231,7 @@ class User {
     }
 
     // Set Password
-    async setPassword(password) {
+    async setPassword(password: string): Promise<boolean> {
         const users = await databases.getUserCollection();
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
@@ -224,7 +244,7 @@ class User {
         return result.modifiedCount === 1;
     }
 
-    async setForceChangePassword(bool) {
+    async setForceChangePassword(bool: boolean): Promise<void> {
         const users = await databases.getUserCollection();
         await users.updateOne(
             { "_id": this.username },
@@ -233,7 +253,7 @@ class User {
     }
 
     // Magic Links
-    async generateOneTimeCode() {
+    async generateOneTimeCode(): Promise<string> {
         const code = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes expiry
 
@@ -246,27 +266,54 @@ class User {
         return code;
     }
 
-    async generateLoginLink() {
+    async generateLoginLink(): Promise<string> {
         const baseUrl = environment.get("BASE_URL");
         const oneTimeCode = await this.generateOneTimeCode();
         return `${baseUrl}/login?code=${oneTimeCode}`;
     }
 
     // Permissions
-    async getUserType() {
-        // get document.rank
-        // if document.rank does not exist, put it at lowest ranked role's rank
-        // iterate through `permissions.panelUserTypes` and get the highest ranked role but lower or equal to user's rank and return it
+    async getUserType(): Promise<string> {
+        // TODO: Implement this method
+        throw new Error("Method not implemented.");
     }
 
-    async setUserType(userType) {
-
+    async setUserType(userType: string): Promise<void> {
+        // TODO: Implement this method
+        throw new Error("Method not implemented.");
     }
 
-    async getPermissionLevel(id) {
-        // get document.permissions[id]
-        // TODO: FINISH THIS.
+    async getPermissionLevel(id: string): Promise<number> {
+        // TODO: Implement this method
+        throw new Error("Method not implemented.");
     }
 }
 
-module.exports = User;
+const Users = {
+    User: User,
+
+    getUserFromIdentifier: async function(userIdentifier: string) {
+        const users = await databases.getUserCollection().catch(() => {
+            throw Error("Failed to fetch collection!")
+        });
+    
+        const userQuery = {
+            "$or": [
+                { "_id": userIdentifier },
+                { "email": userIdentifier },
+            ],
+        }
+    
+        const userData = await users.findOne(userQuery).catch(() => {
+            throw Error("Failed to fetch user!")
+        });
+    
+        if (userData) {
+            return userData._id
+        } else {
+            throw Error("User not found!")
+        }
+    }
+}
+
+export default Users;

@@ -48,7 +48,7 @@ const permissions = [
     },
 ]
 
-module.exports = {
+export {
     permissions,
     panelUserTypes,
     teamUserTypes

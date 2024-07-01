@@ -20,6 +20,7 @@ if curl --unix-socket $DOCKER_SOCKET http://localhost/_ping &> /dev/null; then
     echo "Docker daemon is running."
 else
     echo "Docker daemon is not running or there is an issue with docker.sock."
+    exit 1
 fi
 
 # Function to handle SIGINT (Control+C)
