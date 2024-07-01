@@ -8,10 +8,12 @@ class UserCollection {
 		username,
 		email,
 		hash,
+		verified,
 	}: {
 		username: string;
 		email: string;
 		hash: string;
+		verified: boolean;
 	}) {
 		try {
 			const user = await this.prisma.user.create({
@@ -19,6 +21,7 @@ class UserCollection {
 					username,
 					email,
 					passwordHash: hash,
+					verified,
 				},
 			});
 			return user;
@@ -66,6 +69,25 @@ class UserCollection {
 			const updatedUser = await this.prisma.user.update({
 				where: { id: userId },
 				data: { passwordHash: newPasswordHash },
+			});
+			return updatedUser;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
+
+	async updateVerified({
+		userId,
+		verified,
+	}: {
+		userId: string;
+		verified: boolean;
+	}) {
+		try {
+			const updatedUser = await this.prisma.user.update({
+				where: { id: userId },
+				data: { verified: verified },
 			});
 			return updatedUser;
 		} catch (error) {
