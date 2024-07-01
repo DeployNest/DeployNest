@@ -1,15 +1,15 @@
-const configurations = {}
-
 const configs = {
     "TELEMETRY": true,
 }
 
-configurations.get = function (envName) {
+const configurations = {
+    get: function (envName) {
+        throw Error("Not implemented yet!")
+    },
     
-}
-
-configurations.set = function (envName, newValue) {
-    
+    set: function (envName, newValue) {
+        throw Error("Not implemented yet!")
+    },
 }
 
 export { configurations };
