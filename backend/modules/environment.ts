@@ -1,7 +1,7 @@
 require("dotenv").config();
 
-const { cleanEnv, str, bool } = require('envalid');
-const crypto = require('crypto');
+import { cleanEnv, str, bool } from "envalid"
+import crypto from "crypto"
 
 function generateJwtSecret(length = 64): string {
     return crypto.randomBytes(length).toString('hex');

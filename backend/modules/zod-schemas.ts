@@ -22,5 +22,5 @@ type UserSchemas = {
   [K in keyof typeof schemas]: z.infer<typeof schemas[K]>
 };
 
-export { schemas };
+export { schemas as ZodSchemas };
 export type { UserSchemas };

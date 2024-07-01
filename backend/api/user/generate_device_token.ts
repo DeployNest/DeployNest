@@ -4,8 +4,8 @@ const { validator } = require("hono/validator");
 const ZodSchemas = require("../../modules/zod-schemas");
 const { z } = require('zod');
 
-const User = require("../../types/users");
-const users = require("../../modules/users");
+import { Users } from "../../types/users"
+const { User } = Users
 
 const routes = new Hono();
 
@@ -37,7 +37,7 @@ routes.post(
     async (c) => {
         const { user: userIdentifier, authObject } = await c.req.json()
 
-        const username = await users.getUserFromIdentifier(userIdentifier).catch((err) => {
+        const username = await Users.getUserFromIdentifier(userIdentifier).catch((err) => {
             return c.json({
                 success: false,
                 errors: [err.message],

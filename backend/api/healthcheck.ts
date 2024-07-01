@@ -1,4 +1,4 @@
-const { Hono } = require('hono');
+import { Hono } from "Hono"
 
 const routes = new Hono();
 

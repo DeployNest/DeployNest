@@ -1,14 +1,12 @@
-const { Hono } = require("hono");
-const { serve } = require("@hono/node-server");
-const environment = require("./modules/environment");
-const fs = require("fs");
-const path = require("path");
+import { Hono } from "Hono"
+import { serve } from "@hono/node-server"
+import { environment } from "./modules/environment"
+import fs from "fs"
+import path from "path"
 
 const app = new Hono();
 
 const appEnvironment = environment.get("ENVIRONMENT");
-
-require("./types/user");
 
 // Function to recursively import routes
 function importRoutes(folderPath, baseRoute = "") {

@@ -7,7 +7,7 @@ services:
       - "${APP_PORT:-4000}:3000"
     environment:
       - ENVIRONMENT=development
-      - MONGO_URL=mongodb://${DB_USERNAME:-deploynest}:${DB_PASSWORD:-password}@mongo:27017/
+      - MONGO_URL=mongodb://${DB_USERNAME:-deploynest}:${DB_PASSWORD:-password}@mongo:27017/DeployNest?authSource=admin
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-deploynest}

@@ -1,22 +1,12 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { MongoServerError } from "mongodb";
 
 // You'll need to update these import statements based on your project structure
 import { environment } from "../modules/environment";
 import { databases } from "../modules/databases";
-import { permissions } from "../modules/permissions";
 
-interface UserData {
-    _id: string;
-    passwordHash: string;
-    email: string;
-    oneTimeCodes: Array<{ code: string; expiresAt: Date }>;
-    deviceTokens: Array<{ id: string; expiresAt: Date }>;
-    bearerTokens: Array<{ id: string; expiresAt: Date }>;
-    forceChangePassword: boolean;
-}
+const { prisma } = databases;
 
 interface AuthOptions {
     type: "password" | "oneTimeCode";
@@ -33,17 +23,15 @@ class User {
 
     // Signup
     async signup(email: string, password: string): Promise<boolean> {
-        const users = await databases.getUserCollection().catch(() => {
-            throw new Error("Failed to fetch collection!");
-        });
-
-        const userData = await users.findOne({ "_id": this.username }).catch(() => {
+        prisma.user.findUnique({
+            where: {
+                "username": this.username
+            }
+        }).then((userData) => {
+            throw new Error("User already exists!");
+        }).catch(() => {
             throw new Error("Failed to fetch user!");
         });
-
-        if (userData) {
-            throw new Error("User already exists!");
-        }
 
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
@@ -290,8 +278,7 @@ class User {
 }
 
 const Users = {
-    User: User,
-
+    User,
     getUserFromIdentifier: async function(userIdentifier: string) {
         const users = await databases.getUserCollection().catch(() => {
             throw Error("Failed to fetch collection!")
@@ -313,7 +300,7 @@ const Users = {
         } else {
             throw Error("User not found!")
         }
-    }
+    },
 }
 
-export default Users;
+export { Users };

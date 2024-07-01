@@ -1,51 +1,24 @@
-const { MongoClient } = require("mongodb");
-const { createClient: createRedisClient } = require("redis");
+import { PrismaClient } from "@prisma/client";
 
-const environment = require("./environment")
+// PrismaClient is attached to the `global` object in development to prevent
+// exhausting your database connection limit.
+//
+// Learn more: 
+// https://pris.ly/d/help/next-js-best-practices
 
-// MongoDB //
-const uri = environment.get("MONGO_URL")
+let prisma: PrismaClient
 
-const client = new MongoClient(uri);
-
-const databases = {};
-
-databases.getMongo = async function() {
-  if (!client.topology || !client.topology.isConnected()) {
-    await client.connect();
-    console.log('Connected successfully to database');
+if (process.env.NODE_ENV === 'production') {
+  prisma = new PrismaClient()
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient()
   }
-  return client.db('DeployNest');
+  prisma = global.prisma
 }
 
-databases.getUserCollection = async function() {
-  const mongoDB = await databases.getMongo();
-  return mongoDB.collection("users")
+const databases = {
+  prisma
 }
-
-async function createMongoIndexes() {
-  databases.getUserCollection().then((collection) => {
-    return collection.createIndex("email", {
-      unique: true,
-    })
-  })
-}
-createMongoIndexes()
-
-// Redis //
-const redisConfig = {
-  host: environment.get("REDIS_HOST"),
-  port: environment.get("REDIS_PORT"),
-  password: environment.get("REDIS_PASSWORD"),
-};
-
-const redisClient = createRedisClient(redisConfig);
-databases.getRedis = async function() {
-  if (!redisClient.isOpen) {
-    await redisClient.connect();
-    console.log('Connected successfully to Redis');
-  }
-  return redisClient;
-};
 
 export { databases };

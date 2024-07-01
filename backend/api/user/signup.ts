@@ -1,10 +1,11 @@
-const { Hono } = require('hono');
-const { validator } = require("hono/validator");
+import { Hono } from "Hono"
+import { validator } from "hono/validator"
 
-const ZodSchemas = require("../../modules/zod-schemas");
-const { z } = require('zod');
+import { ZodSchemas } from "../../modules/zod-schemas"
+import { z } from "zod"
 
-const User = require("../../types/user");
+import { Users } from "../../types/users"
+const { User } = Users
 
 const routes = new Hono();
 

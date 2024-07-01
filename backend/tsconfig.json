@@ -2,6 +2,9 @@
     "compilerOptions": {
       "target": "ES6",
       "outDir": "./dist", // Specify the output folder for compiled JavaScript
-      "allowJs": true
+      "allowJs": true,
+      "moduleResolution": "nodenext",
+      "module": "NodeNext"
     },
+    "exclude": ["node_modules", "dist"]
   }

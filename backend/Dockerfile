@@ -14,6 +14,7 @@ USER node
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
+RUN npm run prisma:migrate
 COPY --from=builder /usr/src/app/dist ./dist
 EXPOSE 8080
 CMD [ "node", "dist/index.js" ]
