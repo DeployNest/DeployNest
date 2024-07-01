@@ -4,6 +4,7 @@ class Mailer {
 	private transporter: nodemailer.Transporter;
 
 	constructor() {
+		// TODO add email configuration to environment variables
 		this.transporter = nodemailer.createTransport({
 			host: "smtp.example.com",
 			port: 587,
