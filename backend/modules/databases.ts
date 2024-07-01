@@ -1,24 +1,20 @@
 import { PrismaClient } from "@prisma/client";
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more:
-// https://pris.ly/d/help/next-js-best-practices
+class Databases {
+	private static instance: PrismaClient;
 
-let prisma: PrismaClient;
+	//? Private constructor to prevent instantiation
+	private constructor() {}
 
-if (process.env.NODE_ENV === "production") {
-	prisma = new PrismaClient();
-} else {
-	if (!global.prisma) {
-		global.prisma = new PrismaClient();
+	public static getInstance(): PrismaClient {
+		if (!Databases.instance) {
+			Databases.instance = new PrismaClient();
+		}
+
+		return Databases.instance;
 	}
-	prisma = global.prisma;
 }
 
-const databases = {
-	prisma,
-};
+const prisma = Databases.getInstance();
 
-export { databases };
+export { prisma };
