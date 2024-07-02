@@ -1,9 +1,8 @@
 import { User } from "@prisma/client";
-import tokenCollection from "collections/token.collection";
 import userCollection from "collections/user.collection";
 import HashService from "utils/hash";
 
-export async function signup(
+export async function create_user(
 	email: string,
 	password: string
 ): Promise<Pick<User, "email" | "id" | "username">> {

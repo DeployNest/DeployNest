@@ -1,4 +1,4 @@
-import { Hono } from "Hono"
+import { Hono } from "hono"
 import { serve } from "@hono/node-server"
 import { environment } from "./modules/environment"
 import fs from "fs"
