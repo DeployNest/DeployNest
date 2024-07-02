@@ -4,7 +4,7 @@ import { prisma } from "modules/databases";
 class UserCollection {
 	constructor(private prisma: PrismaClient) {}
 
-	async signup({
+	async create({
 		username,
 		email,
 		hash,

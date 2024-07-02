@@ -12,7 +12,7 @@ export async function signup(
 	if (user) throw new Error("User already exists");
 
 	const hashedPassword = await HashService.hashPassword(password);
-	const newUser = await userCollection.signup({
+	const newUser = await userCollection.create({
 		email,
 		username: email,
 		hash: hashedPassword,

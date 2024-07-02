@@ -10,9 +10,9 @@ export async function create_user(
 	if (user) throw new Error("User already exists");
 
 	const hashedPassword = await HashService.hashPassword(password);
-	const newUser = await userCollection.signup({
+	const newUser = await userCollection.create({
 		email,
-		username: email,
+		username: this.username,
 		hash: hashedPassword,
         verified: true,
 	});
