@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { prisma } from "modules/databases";
 
 class UserCollection {
@@ -40,13 +40,18 @@ class UserCollection {
 		}
 	}
 
-	async getUserByEmail(email: string) {
+	async getUserByEmail(
+		email: string,
+		{
+			select,
+		}: {
+			select?: { [fieldName: string]: true };
+		}
+	): Promise<User | null> {
 		try {
-			const user = await this.prisma.user.findUnique({
-				select: {
-					id: true,
-				},
+			const user = await this.prisma.user.findFirst({
 				where: { email },
+				// select,
 			});
 			return user;
 		} catch (error) {

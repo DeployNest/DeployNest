@@ -4,17 +4,28 @@ import userCollection from "collections/user.collection";
 import HashService from "utils/hash";
 import Mailer from "utils/mailer";
 
-export async function signup(
-	email: string,
-	password: string
-): Promise<Pick<User, "email" | "id" | "username">> {
-	const user = await userCollection.getUserByEmail(email);
+type Props = {
+	username: string;
+	name?: string;
+	email: string;
+	password: string;
+};
+
+export async function SignupService({
+	username,
+	name,
+	email,
+	password,
+}: Props): Promise<Pick<User, "email" | "id" | "username">> {
+	const user = await userCollection.getUserByEmail(email, {
+		select: { id: true },
+	});
 	if (user) throw new Error("User already exists");
 
 	const hashedPassword = await HashService.hashPassword(password);
 	const newUser = await userCollection.signup({
 		email,
-		username: email,
+		username,
 		hash: hashedPassword,
 	});
 
@@ -27,9 +38,23 @@ export async function signup(
 	// TODO udpate this link
 	const verificationLink = `https://example.com/verify-email?token=${verificationToken.id}`;
 
+	// TODO pass SYSTEM mailer instance from controller to service
+	const mailer = new Mailer({
+		type: "system",
+		service: "nodemailer",
+		config: {
+			host: "",
+			port: 587,
+			secure: false,
+			auth: {
+				user: "",
+				pass: "",
+			},
+		},
+	});
+
 	// TODO add email verification template
-	const mailer = new Mailer();
-	await mailer.sendMail(
+	await mailer.nodemailerSendMail(
 		email,
 		"Verify your email",
 		`Click here to verify your email: ${verificationLink}`,
