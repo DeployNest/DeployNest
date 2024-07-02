@@ -29,37 +29,28 @@ export async function SignupService({
 		hash: hashedPassword,
 	});
 
-	const verificationToken = await tokenCollection.generateToken({
-		userId: newUser.id,
-		type: "email_verification",
-		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
-	});
-
-	// TODO udpate this link
-	const verificationLink = `https://example.com/verify-email?token=${verificationToken.id}`;
-
-	// TODO pass SYSTEM mailer instance from controller to service
-	const mailer = new Mailer({
-		type: "system",
-		service: "nodemailer",
-		config: {
-			host: "",
-			port: 587,
-			secure: false,
-			auth: {
-				user: "",
-				pass: "",
-			},
-		},
-	});
-
-	// TODO add email verification template
-	await mailer.nodemailerSendMail(
-		email,
-		"Verify your email",
-		`Click here to verify your email: ${verificationLink}`,
-		`<a href="${verificationLink}">Click here to verify your email</a>`
-	);
+	// NOTE as this is self-hosted, we don't have to send verification email
+	// // TODO create a mailer instance from user config
+	// const mailer = new Mailer({
+	// 	type: "user",
+	// 	service: "nodemailer",
+	// 	config: {
+	// 		host: "",
+	// 		port: 587,
+	// 		secure: false,
+	// 		auth: {
+	// 			user: "",
+	// 			pass: "",
+	// 		},
+	// 	},
+	// });
+	// // TODO add email verification template
+	// await mailer.nodemailerSendMail(
+	// 	email,
+	// 	"Verify your email",
+	// 	`Click here to verify your email: ${verificationLink}`,
+	// 	`<a href="${verificationLink}">Click here to verify your email</a>`
+	// );
 
 	return {
 		email: newUser.email,

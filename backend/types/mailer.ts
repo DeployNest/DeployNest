@@ -69,4 +69,6 @@ export type SystemMailerConfig = {
 	config: NodeMailerConfig;
 };
 
-export type MailerConfig = UserMailerConfig | SystemMailerConfig;
+export type MailerConfig =
+	// SystemMailerConfig |
+	UserMailerConfig;

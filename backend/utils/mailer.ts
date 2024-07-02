@@ -1,15 +1,8 @@
 /**
  * Mailer class to send emails using different services
  *
- * There can be two types of mailer configurations:
- * 1. User mailer configuration: This configuration is used to send emails on behalf of the user, using the user's email service provider.
- * 2. System mailer configuration: This configuration is used to send emails on behalf of the system.
- *
- ** INFO
- * - System mailer configuration is used to send system-generated emails like email verification, password reset, etc.
- *   The system mailer configuration is set up once during the application startup. // TODO
- *
- * - User mailer configuration is used to send notification emails or other alerts setup by the user on our platform.
+ * There can be many types of mailer configurations:
+ * configuration is used to send emails on behalf of the user, using the user's email service provider. such as SendGrid, MailGun, MailChimp, etc.
  *
  ** EXTENDABILITY
  *
@@ -68,7 +61,7 @@ class Mailer {
 	}
 
 	async nodemailerSetup() {
-		if (this.config.type !== "system") {
+		if (this.config.service !== "nodemailer") {
 			throw new Error("Invalid config type");
 		}
 		const { config } = this.config;
@@ -89,8 +82,11 @@ class Mailer {
 		text: string,
 		html: string
 	): Promise<void> {
+		if (this.config.service !== "nodemailer") {
+			throw new Error("Invalid config type");
+		}
 		const mailOptions = {
-			from: '"Deploynest Agent" <agent@deploynest.com>',
+			from: this.config.config.auth.user,
 			to: to,
 			subject: subject,
 			text: text,
