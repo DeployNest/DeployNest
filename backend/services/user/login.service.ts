@@ -29,5 +29,7 @@ export async function LoginService({
 		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
 	});
 
+	// TODO store token in session-storage along with user id or data
+
 	return token;
 }
