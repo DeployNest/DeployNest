@@ -3,8 +3,8 @@ import crypto from "crypto";
 import { MongoServerError } from "mongodb";
 
 // You'll need to update these import statements based on your project structure
-import { environment } from "modules/environment";
-import { databases } from "modules/databases";
+import { environment } from "src/modules/environment";
+import { databases } from "src/modules/databases";
 
 const { prisma } = databases;
 

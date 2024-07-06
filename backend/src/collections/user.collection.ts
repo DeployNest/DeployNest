@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client";
-import { prisma } from "modules/databases";
+import { prisma } from "src/modules/databases";
 
 class UserCollection {
 	constructor(private prisma: PrismaClient) {}

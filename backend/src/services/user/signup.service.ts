@@ -1,8 +1,6 @@
 import { User } from "@prisma/client";
-import tokenCollection from "collections/token.collection";
-import userCollection from "collections/user.collection";
-import HashService from "utils/hash";
-import Mailer from "utils/mailer";
+import userCollection from "src/collections/user.collection";
+import HashService from "src/utils/hash";
 
 type Props = {
 	username: string;

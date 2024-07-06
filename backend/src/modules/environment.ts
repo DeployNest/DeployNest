@@ -1,7 +1,7 @@
-require("dotenv").config();
-
 import { cleanEnv, str, bool } from "envalid";
 import crypto from "crypto";
+import { config } from "dotenv";
+config();
 
 function generateJwtSecret(length = 64): string {
 	return crypto.randomBytes(length).toString("hex");

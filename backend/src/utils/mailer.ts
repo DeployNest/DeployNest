@@ -17,7 +17,7 @@
  */
 
 import nodemailer from "nodemailer";
-import { MailerConfig } from "types/mailer";
+import { MailerConfig } from "src/types/mailer";
 
 class Mailer {
 	private nodemailerTransporter: nodemailer.Transporter;
