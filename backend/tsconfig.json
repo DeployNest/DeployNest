@@ -1,14 +1,14 @@
 {
-    "compilerOptions": {
-			"target": "ES6",
-			"outDir": "./dist", // Specify the output folder for compiled JavaScript
-			"allowJs": true,
-			"moduleResolution": "nodenext",
-			"module": "NodeNext",
-			"baseUrl": "./",
-			"paths": {
-				"src/*": ["./src/*"]
-			}
-		},
-    "exclude": ["node_modules", "dist"]
-  }
+	"compilerOptions": {
+		"target": "ES6",
+		"outDir": "./dist", // Specify the output folder for compiled JavaScript
+		"allowJs": true,
+		"moduleResolution": "nodenext",
+		"module": "NodeNext",
+		"baseUrl": ".",
+	},
+	"exclude": [
+		"node_modules",
+		"dist"
+	],
+}

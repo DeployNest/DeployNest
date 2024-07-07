@@ -1,5 +1,4 @@
-// const { Hono } = require("hono");
-import { Hono } from "hono/tiny"; //! FIX from "hono" throws type error
+import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { ZodSchemas } from "src/modules/zod-schemas";
 import { z } from "zod";

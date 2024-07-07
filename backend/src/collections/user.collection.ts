@@ -78,6 +78,32 @@ class UserCollection {
 			throw error;
 		}
 	}
+
+	async create({
+		email,
+		username,
+		hash,
+		verified,
+	}: {
+		email: string;
+		username: string;
+		hash: string;
+		verified: boolean;
+	}) {
+		try {
+			const newUser = await this.prisma.user.create({
+				data: {
+					email,
+					username,
+					passwordHash: hash,
+				},
+			});
+			return newUser;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
 }
 
 export default new UserCollection(prisma);
