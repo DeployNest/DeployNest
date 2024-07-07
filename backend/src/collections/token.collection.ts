@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { prisma } from "modules/databases";
-import HashService from "utils/hash";
+import { PrismaClient, Token } from "@prisma/client";
+import { prisma } from "src/modules/databases";
+import HashService from "src/utils/hash";
 
 class TokenCollection {
 	constructor(private prisma: PrismaClient) {}
@@ -32,34 +32,31 @@ class TokenCollection {
 	}
 
 	async validateToken({
-		userId,
 		token,
 		deleteOnSuccess = false,
 	}: {
-		userId: string;
 		token: string;
 		deleteOnSuccess?: boolean;
-	}): Promise<boolean> {
+	}): Promise<Token | null> {
 		try {
 			const tokenRecord = await this.prisma.token.findFirst({
 				where: {
 					id: token,
-					userId,
 				},
 			});
 
 			if (!tokenRecord) {
-				return false;
+				return null;
 			}
 
 			if (deleteOnSuccess) {
 				await this.deleteToken({
-					userId,
 					token,
+					userId: tokenRecord.userId,
 				});
 			}
 
-			return true;
+			return tokenRecord;
 		} catch (error) {
 			console.error(error);
 			throw error;

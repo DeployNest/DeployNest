@@ -1,19 +1,17 @@
-import { PrismaClient } from "@prisma/client";
-import { prisma } from "modules/databases";
+import { PrismaClient, User } from "@prisma/client";
+import { prisma } from "src/modules/databases";
 
 class UserCollection {
 	constructor(private prisma: PrismaClient) {}
 
-	async create({
+	async signup({
 		username,
 		email,
 		hash,
-		verified,
 	}: {
 		username: string;
 		email: string;
 		hash: string;
-		verified: boolean;
 	}) {
 		try {
 			const user = await this.prisma.user.create({
@@ -21,7 +19,6 @@ class UserCollection {
 					username,
 					email,
 					passwordHash: hash,
-					verified,
 				},
 			});
 			return user;
@@ -43,13 +40,18 @@ class UserCollection {
 		}
 	}
 
-	async getUserByEmail(email: string) {
+	async getUserByEmail(
+		email: string,
+		{
+			select,
+		}: {
+			select?: { [fieldName: string]: true };
+		}
+	): Promise<User | null> {
 		try {
-			const user = await this.prisma.user.findUnique({
-				select: {
-					id: true,
-				},
+			const user = await this.prisma.user.findFirst({
 				where: { email },
+				// select,
 			});
 			return user;
 		} catch (error) {
@@ -77,19 +79,26 @@ class UserCollection {
 		}
 	}
 
-	async updateVerified({
-		userId,
+	async create({
+		email,
+		username,
+		hash,
 		verified,
 	}: {
-		userId: string;
+		email: string;
+		username: string;
+		hash: string;
 		verified: boolean;
 	}) {
 		try {
-			const updatedUser = await this.prisma.user.update({
-				where: { id: userId },
-				data: { verified: verified },
+			const newUser = await this.prisma.user.create({
+				data: {
+					email,
+					username,
+					passwordHash: hash,
+				},
 			});
-			return updatedUser;
+			return newUser;
 		} catch (error) {
 			console.error(error);
 			throw error;

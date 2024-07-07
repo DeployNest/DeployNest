@@ -1,16 +1,15 @@
 import { Hono } from "hono";
 import { validator } from "hono/validator";
-import { ZodSchemas } from "modules/zod-schemas";
+import { ZodSchemas } from "src/modules/zod-schemas";
 import { z } from "zod";
-
-import { Users } from "types/users";
-const { User } = Users;
+import User from "src/classes/user";
 
 const routes = new Hono();
 
 const schema = z.object({
-	user: ZodSchemas.get_userIdentifier,
-	authObject: ZodSchemas.authObject,
+	username: ZodSchemas.set_username,
+	email: ZodSchemas.set_email,
+	password: ZodSchemas.set_password,
 });
 
 routes.post(
@@ -37,41 +36,26 @@ routes.post(
 		}
 	}),
 	async (c) => {
-		const { user: userIdentifier, authObject } = await c.req.json();
-
-		const username = await Users.getUserFromIdentifier(userIdentifier).catch(
-			(err) => {
-				return c.json(
-					{
-						success: false,
-						errors: [err.message],
-					},
-					500
-				);
-			}
-		);
+		const { username, email, password } = await c.req.json();
 
 		const user = new User(username);
-
 		return await user
-			.authenticate(authObject)
+			.signup(email, password)
 			.then((success) => {
 				if (!success) {
-					throw Error("Failed to authenticate!");
+					throw Error("Failed to create user!");
 				}
 
-				return user.generateDeviceToken();
-			})
-			.then((deviceToken) => {
 				return c.json({
 					success: true,
-					token: deviceToken,
+					summary: "Created user",
 				});
 			})
 			.catch((err) => {
 				return c.json(
 					{
 						success: false,
+						summary: "Failed to create user",
 						errors: [err.message],
 					},
 					500

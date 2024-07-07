@@ -14,16 +14,15 @@ generator client {
 }
 
 model User {
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  username            String   @unique
-  email               String   @unique
-  name                String?
-  passwordHash        String?
-  forceChangePassword Boolean  @default(false)
+  id                              String   @id @default(auto()) @map("_id") @db.ObjectId
+  username                       String     @unique
+  email                           String   @unique
+  name                            String?
+  passwordHash               String?
+  forceChangePassword Boolean   @default(false)
   Token               Token[]
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-  verified            Boolean  @default(false)
 }
 
 model Token {
@@ -33,4 +32,7 @@ model Token {
   userId    String    @db.ObjectId
   type      String // 'verification' or 'device'
   expiresAt DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  verified            Boolean  @default(false)
 }
