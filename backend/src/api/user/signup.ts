@@ -1,10 +1,8 @@
-import { Hono } from "Hono";
+import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { ZodSchemas } from "src/modules/zod-schemas";
 import { z } from "zod";
-
-import { Users } from "src/types/users";
-const { User } = Users;
+import User from "src/classes/user";
 
 const routes = new Hono();
 
