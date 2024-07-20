@@ -1,6 +1,6 @@
 import { PrismaClient, Token } from "@prisma/client";
-import { prisma } from "src/modules/databases";
-import HashService from "src/utils/hash";
+import { prisma } from "modules/databases";
+import HashService from "utils/hash";
 
 class TokenCollection {
 	constructor(private prisma: PrismaClient) {}

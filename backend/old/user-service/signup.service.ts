@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
-import userCollection from "src/collections/user.collection";
-import HashService from "src/utils/hash";
+import userCollection from "collections/user.collection";
+import HashService from "utils/hash";
 
 type Props = {
 	username: string;

@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { validator } from "hono/validator";
-import { ZodSchemas } from "src/modules/zod-schemas";
+import { ZodSchemas } from "modules/zod-schemas";
 import { z } from "zod";
-import User from "src/classes/user";
+import User from "classes/user";
 
 const routes = new Hono();
 
@@ -36,11 +36,11 @@ routes.post(
 		}
 	}),
 	async (c) => {
-		const { username, email, password } = await c.req.json();
+		const { email, password } = await c.req.json();
 
-		const user = new User(username);
+		const user = new User(email);
 		return await user
-			.signup(email, password)
+			.create(password)
 			.then((success) => {
 				if (!success) {
 					throw Error("Failed to create user!");

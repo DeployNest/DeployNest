@@ -1,22 +1,20 @@
 import { PrismaClient, User } from "@prisma/client";
-import { prisma } from "src/modules/databases";
+import { prisma } from "modules/databases";
+import tokenCollection from "collections/token.collection";
 
 class UserCollection {
 	constructor(private prisma: PrismaClient) {}
 
 	async signup({
-		username,
 		email,
 		hash,
 	}: {
-		username: string;
 		email: string;
 		hash: string;
 	}) {
 		try {
 			const user = await this.prisma.user.create({
 				data: {
-					username,
 					email,
 					passwordHash: hash,
 				},
@@ -41,17 +39,11 @@ class UserCollection {
 	}
 
 	async getUserByEmail(
-		email: string,
-		{
-			select,
-		}: {
-			select?: { [fieldName: string]: true };
-		}
+		email: string
 	): Promise<User | null> {
 		try {
 			const user = await this.prisma.user.findFirst({
 				where: { email },
-				// select,
 			});
 			return user;
 		} catch (error) {
@@ -60,7 +52,7 @@ class UserCollection {
 		}
 	}
 
-	async changePassword({
+	async setPassword({
 		userId,
 		newPasswordHash,
 	}: {
@@ -81,20 +73,15 @@ class UserCollection {
 
 	async create({
 		email,
-		username,
 		hash,
-		verified,
 	}: {
 		email: string;
-		username: string;
 		hash: string;
-		verified: boolean;
 	}) {
 		try {
 			const newUser = await this.prisma.user.create({
 				data: {
 					email,
-					username,
 					passwordHash: hash,
 				},
 			});

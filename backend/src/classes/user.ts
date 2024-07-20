@@ -1,15 +1,13 @@
-import { create_user } from "src/services/user/create-user";
-import { signup } from "src/services/user/signup";
+import { create_user } from "services/user/create";
 
 class User {
-	private username: string;
+	private email: string;
 
-	constructor(username: string) {
-		this.username = username;
+	constructor(email: string) {
+		this.email = email;
 	}
 
-	create_user: typeof create_user = create_user.bind(this);
-	signup: typeof signup = signup.bind(this);
+	create: typeof create_user = create_user.bind(this);
 }
 
 export default User;

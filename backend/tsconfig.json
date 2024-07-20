@@ -1,15 +1,24 @@
 {
 	"compilerOptions": {
-		"target": "ES6",
-		"outDir": "./dist", // Specify the output folder for compiled JavaScript
-		"allowJs": true,
-		"moduleResolution": "nodenext",
-		"module": "NodeNext",
-		"baseUrl": ".",
+	  "target": "ES2022",
+	  "module": "NodeNext",
+	  "moduleResolution": "NodeNext",
+	  "outDir": "./dist",
+	  "rootDir": "./src",
+	  "baseUrl": "./src",
+	  "esModuleInterop": true,
+	  "skipLibCheck": true,
+	  "forceConsistentCasingInFileNames": true,
+	  "resolveJsonModule": true,
+	  "allowJs": true,
+	  "paths": {
+		"*": ["*", "modules/*"]
+	  }
 	},
+	"include": ["src/**/*"],
 	"exclude": [
-		"node_modules",
-		"dist",
-		"src/types/old.users.ts"
-	],
-}
+	  "node_modules",
+	  "dist",
+	  "src/types/old.users.ts"
+	]
+  }

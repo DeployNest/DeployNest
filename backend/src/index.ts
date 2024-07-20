@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { environment } from "src/modules/environment";
+import { environment } from "modules/environment";
 import fs from "fs";
 import path from "path";
 

@@ -1,5 +1,5 @@
 import { Token } from "@prisma/client";
-import tokenCollection from "src/collections/token.collection";
+import tokenCollection from "collections/token.collection";
 
 type Props = {
 	token: string;
