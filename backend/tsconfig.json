@@ -12,8 +12,8 @@
 	  "resolveJsonModule": true,
 	  "allowJs": true,
 	  "paths": {
-		"*": ["*", "modules/*"]
-	  }
+		"*": ["*"]
+	  },
 	},
 	"include": ["src/**/*"],
 	"exclude": [
