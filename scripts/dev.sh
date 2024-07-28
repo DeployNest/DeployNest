@@ -4,7 +4,7 @@
 set -e
 
 # Define the path to the Docker Compose file
-COMPOSE_FILE="../docker-compose.dev.yml"
+COMPOSE_FILE="./docker-compose.dev.yml"
 DOCKER_SOCKET="/var/run/docker.sock"
 
 # Check if docker is installed

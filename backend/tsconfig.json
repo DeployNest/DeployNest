@@ -1,24 +1,18 @@
 {
 	"compilerOptions": {
-	  "target": "ES2022",
+	  "target": "ES6",
 	  "module": "NodeNext",
-	  "moduleResolution": "NodeNext",
 	  "outDir": "./dist",
 	  "rootDir": "./src",
 	  "baseUrl": "./src",
-	  "esModuleInterop": true,
-	  "skipLibCheck": true,
-	  "forceConsistentCasingInFileNames": true,
-	  "resolveJsonModule": true,
 	  "allowJs": true,
 	  "paths": {
 		"*": ["*"]
 	  },
 	},
-	"include": ["src/**/*"],
+	"include": ["src/*", "src/**/*"],
 	"exclude": [
 	  "node_modules",
-	  "dist",
-	  "src/types/old.users.ts"
+	  "dist"
 	]
   }
