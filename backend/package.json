@@ -9,16 +9,16 @@
   "dependencies": {
     "@hono/node-server": "^1.11.4",
     "@hono/zod-validator": "^0.2.2",
-    "@prisma/client": "5.16.1",
+    "@prisma/client": "^5.17.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.14.9",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "envalid": "^8.0.0",
-    "hono": "^4.4.8",
+    "hono": "^4.5.3",
+    "module-alias": "^2.2.3",
     "mongodb": "^6.7.0",
     "nodemailer": "^6.9.14",
-    "prisma": "^5.16.2",
     "redis": "^4.6.14",
     "typescript": "^5.5.2",
     "zod": "^3.23.8"
@@ -36,8 +36,12 @@
   "author": "iamEvanYT",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.4",
+    "@types/nodemailer": "^6.4.15",
     "chokidar": "^3.6.0",
-    "@types/nodemailer": "^6.4.15"
-  }
+    "nodemon": "^3.1.4",
+    "prisma": "^5.17.0"
+  },
+  "_moduleDirectories": [
+    "."
+  ]
 }

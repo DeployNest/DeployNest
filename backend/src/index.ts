@@ -1,10 +1,20 @@
+require("module-alias/register")
+
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { environment } from "./modules/environment";
+import { trimTrailingSlash } from 'hono/trailing-slash';
+import { logger } from 'hono/logger';
+
+import { environment } from "modules/environment";
 import fs from "fs";
 import path from "path";
 
 const app = new Hono();
+app.use(trimTrailingSlash());
+
+if (environment.get("ENVIRONMENT") == "development") {
+	app.use(logger());
+}
 
 // Function to recursively import routes
 function importRoutes(folderPath, baseRoute = "") {
@@ -19,11 +29,12 @@ function importRoutes(folderPath, baseRoute = "") {
 			importRoutes(filePath, path.join(baseRoute, file));
 		} else if (file.endsWith(".js")) {
 			// Import and mount JavaScript files as routes
-			const route = require(filePath);
+			const requiredRoutes = require(filePath);
+			const { routes } = requiredRoutes
+
 			const routeName = file === "index.js" ? "" : path.parse(file).name;
 			const fullRoute = path.join(baseRoute, routeName);
-			console.log(fullRoute, route)
-			app.route(fullRoute, route);
+			app.route(fullRoute, routes);
 		}
 	});
 }

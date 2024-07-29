@@ -27,7 +27,7 @@ RUN if [ "$NODE_ENV" = "production" ]; then \
 
 COPY --from=builder /usr/src/app/dist ./
 COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
-ENV NODE_ENV ${NODE_ENV}
+ENV NODE_ENV $NODE_ENV
 EXPOSE 8080
 
 CMD ["node", "index.js"]

@@ -59,7 +59,6 @@ function startTscWatch() {
 function handleDistChange(action: string, path: string) {
     if (action === "add" || action === "change") {
         const relativePath = path.replace(distWatchDir, "");
-        console.log("relativePath", relativePath);
         copyFile(path, `/usr/src/app${relativePath}`, (err) => {
             if (err) console.error(`Error copying file: ${err}`);
         });
