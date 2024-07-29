@@ -22,6 +22,7 @@ function importRoutes(folderPath, baseRoute = "") {
 			const route = require(filePath);
 			const routeName = file === "index.js" ? "" : path.parse(file).name;
 			const fullRoute = path.join(baseRoute, routeName);
+			console.log(fullRoute, route)
 			app.route(fullRoute, route);
 		}
 	});

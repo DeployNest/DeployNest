@@ -3,6 +3,11 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
+      args:
+        - NODE_ENV=development
+    volumes:
+      - "./backend:/usr/src/source"
+    user: "root"
     ports:
       - "${APP_PORT:-4000}:3000"
     environment:
@@ -11,7 +16,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-deploynest}
-    command: "npm run dev"
+    command: "npm run watch"
 
   mongo:
     image: mongo
